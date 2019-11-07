@@ -92,7 +92,7 @@ func setupRenderStagesEnvironment(ctx context.Context, d adb.Device, packageName
 		return nil, log.Err(ctx, err, "No driver package found.")
 	}
 	packages := []string{driverPackageName}
-	enabledLayers := []string{renderStageVulkanLayerName}
+	enabledLayers := []string{"VkApi", renderStageVulkanLayerName}
 	if abi != nil {
 		packages = append(packages, gapidapk.PackageName(abi))
 		enabledLayers = append(enabledLayers, layers...)

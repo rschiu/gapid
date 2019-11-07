@@ -33,6 +33,7 @@
 #include <cstdio>
 #include <cstring>
 #include <mutex>
+#include <sstream>
 #include <type_traits>
 #include <unordered_map>
 #include <vector>
@@ -78,6 +79,23 @@ VkResult vkQueueSubmit(
     const VkSubmitInfo*                         pSubmits,
     VkFence                                     fence) {
   ATRACE_CALL();
+  if (ATrace_isEnabled()) {
+    {
+      std::stringstream ss;
+      ss << "VkQueue: " << reinterpret_cast<std::uintptr_t>(queue);
+      ATRACE_NAME(ss.str().c_str());
+    }
+    for (uint32_t i = 0; i < submitCount; i++) {
+      for (uint32_t j = 0; j < pSubmits[i].commandBufferCount; j++) {
+        std::stringstream ss;
+        ss << "VkCommandBuffer: "
+          << reinterpret_cast<std::uintptr_t>(
+              pSubmits[i].pCommandBuffers[j]);
+        ATRACE_NAME(ss.str().c_str());
+      }
+    }
+  }
+  LOGI("vkQueueSubmit");
   return next(queue, submitCount, pSubmits, fence);
 }
 

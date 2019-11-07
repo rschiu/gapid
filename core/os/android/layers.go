@@ -65,11 +65,11 @@ func SetupLayers(ctx context.Context, d Device, appPkg string, layerPkgs []strin
 		return cleanup.Invoke(ctx), err
 	}
 	if vulkan {
-		if err := pushSetting("global", "gpu_debug_layers", "\""+strings.Join(layers, ";")+"\""); err != nil {
+		if err := pushSetting("global", "gpu_debug_layers", "\""+strings.Join(layers, ":")+"\""); err != nil {
 			return cleanup.Invoke(ctx), err
 		}
 	} else {
-		if err := pushSetting("global", "gpu_debug_layers_gles", "\""+strings.Join(layers, ";")+"\""); err != nil {
+		if err := pushSetting("global", "gpu_debug_layers_gles", "\""+strings.Join(layers, ":")+"\""); err != nil {
 			return cleanup.Invoke(ctx), err
 		}
 	}
