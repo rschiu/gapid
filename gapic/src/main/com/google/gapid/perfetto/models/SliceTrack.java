@@ -68,6 +68,12 @@ public abstract class SliceTrack extends Track<SliceTrack.Data> {
       "  group by quantum_ts, depth) " +
       "group by depth, label, i";
 
+  private static final String DUMMY_SQL =
+      "select quantum_ts, min(ts) over win1 start_ts, max(ts + dur) over win1 end_ts, depth,"
+      + "substr(group_concat(name) over win1, 0, 101) label    from %s"
+      + " window win1 as (partition by quantum_ts, depth order by dur desc "
+      + "       range between unbounded preceding and unbounded following)";
+
   private static final String SLICE_SQL =
       "select " + BASE_COLUMNS + " from %s where slice_id = %d";
   private static final String SLICE_RANGE_SQL =
@@ -106,6 +112,20 @@ public abstract class SliceTrack extends Track<SliceTrack.Data> {
     };
   }
 
+  public static SliceTrack forSfEventsQueue(SfEvents.Queue queue) {
+    return new SliceTrack("gpu_slice", queue.trackId) {
+      @Override
+      protected Slice buildSlice(Row row, ArgSet args) {
+        return new Slice(row, args) {
+          @Override
+          public String getTitle() {
+            return "Surface Flinger Events";
+          }
+        };
+      }
+    };
+  }
+
   @Override
   protected ListenableFuture<?> initialize(QueryEngine qe) {
     String slices = tableName("slices");
@@ -130,6 +150,17 @@ public abstract class SliceTrack extends Track<SliceTrack.Data> {
   private ListenableFuture<Data> computeQuantSlices(QueryEngine qe, DataRequest req) {
     return transform(qe.query(slicesQuantSql()), res -> {
       int rows = res.getNumRows();
+      if (trackId == 0 || trackId == 1 || trackId == 2 || trackId == 3) {
+        transform(qe.query(dummySql()), result -> {
+          int r = result.getNumRows();
+          System.out.println("NumRows = " + r);
+          Data data = new Data(req, new long[rows], new long[rows], new long[rows], new int[rows],
+              new String[rows], new String[rows], new ArgSet[rows]);
+          return data;
+        });
+        //System.out.println(slicesQuantSql());
+        //System.out.println("Num Rows - " + rows);
+      }
       Data data = new Data(req, new long[rows], new long[rows], new long[rows], new int[rows],
           new String[rows], new String[rows], new ArgSet[rows]);
       res.forEachRow((i, row) -> {
@@ -152,6 +183,9 @@ public abstract class SliceTrack extends Track<SliceTrack.Data> {
     return format(SLICES_QUANT_SQL, tableName("span"));
   }
 
+  private String dummySql() {
+    return format(DUMMY_SQL, tableName("span"));
+  }
   private ListenableFuture<Data> computeSlices(QueryEngine qe, DataRequest req) {
     return transformAsync(qe.query(slicesSql(req)), res ->
       transform(qe.getAllArgs(res.stream().mapToLong(r -> r.getLong(8))), args -> {

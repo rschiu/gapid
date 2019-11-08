@@ -31,6 +31,7 @@ import com.google.gapid.perfetto.views.CounterPanel;
 import com.google.gapid.perfetto.views.CpuSummaryPanel;
 import com.google.gapid.perfetto.views.GpuQueuePanel;
 import com.google.gapid.perfetto.views.ProcessSummaryPanel;
+import com.google.gapid.perfetto.views.SfEventsPanel;
 import com.google.gapid.perfetto.views.ThreadPanel;
 import com.google.gapid.perfetto.views.TitlePanel;
 
@@ -54,6 +55,7 @@ public class Tracks {
         transform(enumerateCounters(data), $2 -> {
           enumerateGpu(data);
           enumerateProcesses(data);
+          enumerateSfEvents(data);
           return data;
         }));
   }
@@ -117,6 +119,25 @@ public class Tracks {
         data.tracks.addTrack("gpu_counters", track.getId(), counter.name,
             single(state -> new CounterPanel(state, track), true));
       }
+    }
+    return data;
+  }
+
+  public static Perfetto.Data.Builder enumerateSfEvents(Perfetto.Data.Builder data) {
+    boolean found = false;
+    for (SfEvents.Queue queue : data.getSfEvents().queues()) {
+      if (!found) {
+        data.tracks.addLabelGroup(null, "sf_events", "SfEvents",
+            group(state -> new TitlePanel("SfEvents"), true));
+        found = true;
+      }
+      SliceTrack track = SliceTrack.forSfEventsQueue(queue);
+      data.tracks.addTrack("sf_events", track.getId(), queue.getDisplay(),
+          single(state -> new SfEventsPanel(state, queue, track), true));
+//      System.out.println("Hit 1");
+//      SfEventsSummaryTrack track = new SfEventsSummaryTrack(queue);
+//      data.tracks.addTrack("sf_events", track.getId(), queue.getDisplay(),
+//          single(state -> new SfEventsSummaryPanel(state, queue, track), true));
     }
     return data;
   }
