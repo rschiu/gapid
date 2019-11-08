@@ -107,6 +107,20 @@ public abstract class SliceTrack extends Track<SliceTrack.Data> {
     };
   }
 
+  public static SliceTrack forSfEventsQueue(SfEvents.Queue queue) {
+    return new SliceTrack("gpu_slice", queue.trackId) {
+      @Override
+      protected Slice buildSlice(Row row, ArgSet args) {
+        return new Slice(row, args) {
+          @Override
+          public String getTitle() {
+            return "Surface Flinger Events";
+          }
+        };
+      }
+    };
+  }
+
   @Override
   protected ListenableFuture<?> initialize(QueryEngine qe) {
     String slices = tableName("slices");
