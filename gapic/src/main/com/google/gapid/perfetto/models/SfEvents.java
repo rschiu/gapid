@@ -17,7 +17,6 @@ package com.google.gapid.perfetto.models;
 
 import static com.google.gapid.util.MoreFutures.transform;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.gapid.models.Perfetto;
@@ -77,7 +76,6 @@ public class SfEvents {
     }
 
     public String getDisplay() {
-      //return "GPU Queue " + id;
       return name;
     }
   }

@@ -112,35 +112,19 @@ public class SfEventsPanel extends TrackPanel implements Selectable {
               Fonts.Style.Normal, title, rectStart + 2, y + 2, rectWidth - 4, SLICE_HEIGHT - 4);
         }
         else {
-          /*float hue = (title.hashCode() & 0x7fffffff) % 360;
-          float saturation = Math.min(20 + depth * 10, 70) / 100f;
-          ctx.setBackgroundColor(hsl(hue, saturation, .65f));
-          ctx.setForegroundColor(hsl(hue, saturation, .65f));
-          ctx.drawCircle(rectStart, SLICE_HEIGHT/4, SLICE_HEIGHT/2);*/
-
           double rectWidth = 16;
           double y = depth * SLICE_HEIGHT;
 
           float hue = (title.hashCode() & 0x7fffffff) % 360;
           float saturation = Math.min(20 + depth * 10, 70) / 100f;
           ctx.setBackgroundColor(hsl(hue, saturation, .65f));
-          //ctx.fillRect(rectStart, y, rectWidth, SLICE_HEIGHT);
           ctx.setForegroundColor(title.substring(0,1).hashCode()%19);
           double[] diamondX = new double[] {rectStart + (rectWidth)/2, rectStart, rectStart + (rectWidth)/2, rectStart + rectWidth};
           double[] diamondY = new double[] {y, y+(SLICE_HEIGHT)/2, SLICE_HEIGHT, y+(SLICE_HEIGHT)/2};
           ctx.fillPolygon(diamondX, diamondY, 4);
-//          ctx.drawLine(rectStart + (rectWidth)/2, y, rectStart, y+(SLICE_HEIGHT)/2); // top left
-//          ctx.drawLine(rectStart, y+(SLICE_HEIGHT)/2, rectStart + (rectWidth)/2, SLICE_HEIGHT); // top right
-//          ctx.drawLine(rectStart + (rectWidth)/2, SLICE_HEIGHT, rectStart + rectWidth, y+(SLICE_HEIGHT)/2); // bottom left
-//          ctx.drawLine(rectStart + rectWidth, y+(SLICE_HEIGHT)/2, rectStart + (rectWidth)/2, y); // bottom right
           ctx.setForegroundColor(colors().textInvertedMain);
           ctx.drawText(
               Fonts.Style.Normal, title.substring(0,1), rectStart, y + 1, rectWidth - 1, SLICE_HEIGHT - 4);
-
-
-          /*ctx.setForegroundColor(colors().textInvertedMain);
-          ctx.drawText(
-              Fonts.Style.Normal, title, rectStart, y , rectWidth, SLICE_HEIGHT - 1);*/
         }
       }
 

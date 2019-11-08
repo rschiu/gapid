@@ -134,10 +134,6 @@ public class Tracks {
       SliceTrack track = SliceTrack.forSfEventsQueue(queue);
       data.tracks.addTrack("sf_events", track.getId(), queue.getDisplay(),
           single(state -> new SfEventsPanel(state, queue, track), true));
-//      System.out.println("Hit 1");
-//      SfEventsSummaryTrack track = new SfEventsSummaryTrack(queue);
-//      data.tracks.addTrack("sf_events", track.getId(), queue.getDisplay(),
-//          single(state -> new SfEventsSummaryPanel(state, queue, track), true));
     }
     return data;
   }
