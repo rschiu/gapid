@@ -53,9 +53,9 @@ public class Tracks {
   public static ListenableFuture<Perfetto.Data.Builder> enumerate(Perfetto.Data.Builder data) {
     return transformAsync(enumerateCpu(data), $1 ->
         transform(enumerateCounters(data), $2 -> {
+          enumerateSfEvents(data);
           enumerateGpu(data);
           enumerateProcesses(data);
-          enumerateSfEvents(data);
           return data;
         }));
   }

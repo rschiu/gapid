@@ -27,6 +27,7 @@ import com.google.gapid.perfetto.canvas.Fonts;
 import com.google.gapid.perfetto.canvas.RenderContext;
 import com.google.gapid.perfetto.canvas.Size;
 import com.google.gapid.perfetto.models.ArgSet;
+import com.google.gapid.perfetto.models.Selection;
 import com.google.gapid.perfetto.models.Selection.CombiningBuilder;
 import com.google.gapid.perfetto.models.SfEvents;
 import com.google.gapid.perfetto.models.SliceTrack;
@@ -207,7 +208,7 @@ public class SfEventsPanel extends TrackPanel implements Selectable {
           @Override
           public boolean click() {
             if (id >= 0) {
-              state.setSelection(track.getSlice(state.getQueryEngine(), id));
+              state.setSelection(Selection.Kind.Gpu, track.getSlice(state.getQueryEngine(), id));
             }
             return false;
           }
@@ -239,7 +240,7 @@ public class SfEventsPanel extends TrackPanel implements Selectable {
         endDepth = Integer.MAX_VALUE;
       }
 
-      builder.add(Kind.Gpu, transform(
+      builder.add(Selection.Kind.Gpu, transform(
           track.getSlices(state.getQueryEngine(), ts, startDepth, endDepth),
           SliceTrack.Slices::new));
     }

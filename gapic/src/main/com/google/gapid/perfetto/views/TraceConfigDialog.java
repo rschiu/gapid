@@ -184,6 +184,9 @@ public class TraceConfigDialog extends DialogBase {
           config.addDataSourcesBuilder()
               .getConfigBuilder()
                   .setName("gpu.renderstages");
+          config.addDataSourcesBuilder()
+              .getConfigBuilder()
+                  .setName("android.surfaceflinger.frame");
         }
         if (settings.perfettoGpuCounters && settings.perfettoGpuCounterIds.length > 0) {
           PerfettoConfig.GpuCounterConfig.Builder counters = config.addDataSourcesBuilder()

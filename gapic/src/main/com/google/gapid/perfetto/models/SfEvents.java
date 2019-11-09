@@ -35,7 +35,7 @@ public class SfEvents {
       "from gpu_track t, gpu_slice s " +
       "where t.id = s.track_id and t.scope = 'graphics_frame_event' " +
       "group by t.id " +
-      "order by t.id";
+      "order by t.name";
 
   private final List<Queue> queues;
 
